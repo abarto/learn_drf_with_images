@@ -16,6 +16,15 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
+from rest_framework.routers import DefaultRouter
+
+from user_profiles.views import UserProfileViewSet
+
+router = DefaultRouter()
+router.register(r'user_profiles', UserProfileViewSet)
+
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^', include(router.urls)),
+    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]
