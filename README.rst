@@ -9,7 +9,7 @@ This project was created to provide a complete example that illustrates how to i
 The model
 ---------
 
-There's only one class that represents the typical "User Profile" use case on `Django <https://www.djangoproject.com/>`_ site:
+There's only one class that represents the typical "User Profile" use case on a `Django <https://www.djangoproject.com/>`_ site:
 
 ::
 
