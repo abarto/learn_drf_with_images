@@ -96,7 +96,7 @@ upstream django {
 
 server {
   listen      80;
-  server_name 127.0.0.1 localhost learn_drf_with_images learn_drf_with_images.local;
+  server_name 127.0.0.1 localhost learn-drf-with-images learn-drf-with-images.local;
   charset     utf-8;
 
   client_max_body_size 75M;   # adjust to taste
