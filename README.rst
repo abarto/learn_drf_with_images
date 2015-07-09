@@ -154,6 +154,8 @@ The following session illustrates the typical usage of our API.
         "image": "http://localhost:8000/media/user_profile_image/1/admin2.jpg"
     }
 
+A `Vagrant <https://www.vagrantup.com/>`_ configuration file is included if you want to test the service yourself.
+
 Feedback
 --------
 
