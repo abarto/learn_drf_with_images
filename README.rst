@@ -108,7 +108,7 @@ The following session illustrates the typical usage of our API.
 
 ::
 
-    $ curl --header "Content-Type: application/x-www-form-urlencoded" --header "Accept: application/json; indent=4" --request POST --data "username=admin&password=admin&client_id=WCiMYWFpVRizZ8DJPqTtvrOPmkcoc9P9ibKHjujl&grant_type=password" http://localhost:8000/o/token/; echo
+    $ curl --header "Content-Type: application/x-www-form-urlencoded" --header "Accept: application/json; indent=4" --request POST --data "username=admin&password=admin&client_id=zmfZyf7EAGJJ6imph3qtwGtoH8eqt1VdVmRZh7NC&grant_type=password" http://localhost:8000/o/token/; echo
     {"access_token": "PkwvCYq0cRYfvpJeXvc4czFKvohwea", "expires_in": 36000, "token_type": "Bearer", "scope": "write read", "refresh_token": "jl3Y5Mo7fLaHvJDWCQv5I9g4zbLHkT"}
 
     $ curl --header "Authorization: Bearer PkwvCYq0cRYfvpJeXvc4czFKvohwea" --header "Accept: application/json; indent=4" --request GET http://localhost:8000/user_profiles/1/; echo
