@@ -128,6 +128,8 @@ REST_FRAMEWORK = {
     )
 }
 
+USE_X_FORWARDED_HOST = True
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
