@@ -120,7 +120,7 @@ server {
 }
     ' > /etc/nginx/conf.d/learn_drf_with_images.conf
 
-    service nginx restart
+    service nginx reload
   SHELL
 
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
