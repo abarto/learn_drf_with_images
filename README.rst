@@ -27,9 +27,6 @@ There's only one class that represents the typical "User Profile" use case on a 
             (GENDER_FEMALE, _('female')),
         )
 
-        def upload_to(self, filename):
-            return 'user_profile_image/{}/{}'.format(self.user_id, filename)
-
         user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
         date_of_birth = models.DateField(_('date of birth'), blank=True, null=True)
         phone_number = PhoneNumberField(_('phone number'), blank=True)
