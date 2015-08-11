@@ -83,12 +83,40 @@ The trick here is that the method is also decorated using ``@parser_classes`` wh
 
 When the method is invoked, we check that the request data contains an ``upload`` entry, and if it does we delete the image associated with the user profile, replace it with the ``UploadedFile`` contents and return a ``Response`` with status code 201 (Created). If ``upload`` is not in the request data, we return a fail response with status 400 (Bad Request).
 
+Alternatively if you want to update the the image as well as the model in a single request, you can use the following:
+
+::
+
+    class UserProfileMultiPartParserViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+        queryset = UserProfile.objects.all()
+        serializer_class = UserProfileSerializer
+        permission_classes = (IsAdminOrIsSelf,)
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+        @parser_classes((MultiPartParser,))
+        def update(self, request, *args, **kwargs):
+            if 'upload' in request.data:
+                user_profile = self.get_object()
+
+                user_profile.image.delete()
+
+                upload = request.data['upload']
+
+                user_profile.image.save(upload.name, upload)
+
+            return super(UserProfileMultiPartParserViewSet, self).update(request, *args, **kwargs)
+
+In here after the image is updated (if necessary) we proceed with the default update.
+
 The last part is to set up the URLs for our API:
 
 ::
 
     router = DefaultRouter()
     router.register(r'user_profiles', UserProfileViewSet)
+    router.register(r'user_profiles_mpp', UserProfileMultiPartParserViewSet)
 
     urlpatterns = [
         url(r'^admin/', include(admin.site.urls)),
@@ -149,6 +177,43 @@ The following session illustrates the typical usage of our API.
         "phone_number": "+41524204242",
         "gender": "M",
         "image": "http://localhost:8000/media/user_profile_image/1/admin2.jpg"
+    }
+
+Using the ``UserProfileMultiPartParserViewSet`` view set, we can update the model and the image in one request:
+
+::
+
+    $ curl --verbose --header "Authorization: Bearer PkwvCYq0cRYfvpJeXvc4czFKvohwea" --header "Accept: application/json; indent=4" --request PUT --form data='{"url":"http://127.0.0.1:8000/user_profiles_mpp/1/","date_of_birth":"1980-01-01","phone_number":null,"gender":"M","image":null}' --form upload=@image.png http://localhost:8000/user_profiles_mpp/1/; echo
+    *   Trying 127.0.0.1...
+    * Connected to localhost (127.0.0.1) port 8000 (#0)
+    * Initializing NSS with certpath: sql:/etc/pki/nssdb
+    > PUT /user_profiles_mpp/1/ HTTP/1.1
+    > User-Agent: curl/7.40.0
+    > Host: localhost:8000
+    > Authorization: Bearer PkwvCYq0cRYfvpJeXvc4czFKvohwea
+    > Accept: application/json; indent=4
+    > Content-Length: 720
+    > Expect: 100-continue
+    > Content-Type: multipart/form-data; boundary=------------------------740bde5e39c758b5
+    >
+    < HTTP/1.1 100 Continue
+    < HTTP/1.1 200 OK
+    < Server: nginx/1.4.6 (Ubuntu)
+    < Date: Tue, 11 Aug 2015 14:53:10 GMT
+    < Content-Type: application/json; indent=4
+    < Transfer-Encoding: chunked
+    < Connection: keep-alive
+    < X-Frame-Options: SAMEORIGIN
+    < Allow: GET, PUT, PATCH, HEAD, OPTIONS
+    < Vary: Accept
+    <
+    {
+        "url": "http://127.0.0.1:8000/user_profiles_mpp/1/",
+        "date_of_birth": "2015-07-07",
+        "phone_number": "+41524204242",
+        "gender": "M",
+        "image": "http://127.0.0.1:8000/media/user_profile_image/1/image.png"
+    * Connection #0 to host localhost left intact
     }
 
 A `Vagrant <https://www.vagrantup.com/>`_ configuration file is included if you want to test the service yourself.

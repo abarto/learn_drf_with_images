@@ -18,10 +18,11 @@ from django.contrib import admin
 
 from rest_framework.routers import DefaultRouter
 
-from user_profiles.views import UserProfileViewSet
+from user_profiles.views import UserProfileViewSet, UserProfileMultiPartParserViewSet
 
 router = DefaultRouter()
 router.register(r'user_profiles', UserProfileViewSet)
+router.register(r'user_profiles_mpp', UserProfileMultiPartParserViewSet)
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),

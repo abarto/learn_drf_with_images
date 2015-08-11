@@ -9,6 +9,7 @@ from .models import UserProfile
 from .permissions import IsAdminOrIsSelf
 from .serializers import UserProfileSerializer
 
+
 class UserProfileViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
@@ -22,6 +23,7 @@ class UserProfileViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     def image(self, request, *args, **kwargs):
         if 'upload' in request.data:
             user_profile = self.get_object()
+
             user_profile.image.delete()
 
             upload = request.data['upload']
@@ -32,3 +34,24 @@ class UserProfileViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
         else:
             return Response(status=HTTP_400_BAD_REQUEST)
 
+
+class UserProfileMultiPartParserViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = (IsAdminOrIsSelf,)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @parser_classes((MultiPartParser,))
+    def update(self, request, *args, **kwargs):
+        if 'upload' in request.data:
+            user_profile = self.get_object()
+
+            user_profile.image.delete()
+
+            upload = request.data['upload']
+
+            user_profile.image.save(upload.name, upload)
+
+        return super(UserProfileMultiPartParserViewSet, self).update(request, *args, **kwargs)
